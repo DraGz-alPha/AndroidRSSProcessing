@@ -55,10 +55,14 @@ public class MainActivity extends AppCompatActivity {
     private String feed_name;
     private String feed_url;
     private String categoryImageName;
+
     private Boolean isSimpleView;
+    private boolean descriptionEnabled;
+    private boolean linkEnabled;
+    private boolean priceEnabled;
+    private boolean pubDateEnabled;
 
     private ListView lvTitles;
-
     private TextView tvCategory;
 
     private SharedPreferences sharedPreferences;
@@ -81,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("RSS Processing", MODE_PRIVATE);
 
         lvTitles = findViewById(R.id.lvTitles);
-
         tvCategory = findViewById(R.id.tvCategory);
 
         categoryImageName = sharedPreferences.getString("default_feed_image", "car_logo");
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            boolean simpleViewModified = data.getBooleanExtra("simple_view_modified", false);
+            boolean simpleViewModified = data.getBooleanExtra("modify_require_refresh", false);
             if (simpleViewModified) {
                 finish();
                 startActivity(getIntent());
@@ -241,6 +244,12 @@ public class MainActivity extends AppCompatActivity {
         boolean networkAvailable = isNetworkAvailable();
 
         if (networkAvailable) {
+
+            descriptionEnabled = sharedPreferences.getBoolean("display_description", true);
+            linkEnabled = sharedPreferences.getBoolean("display_link", true);
+            priceEnabled = sharedPreferences.getBoolean("display_price", true);
+            pubDateEnabled = sharedPreferences.getBoolean("display_pub_date", true);
+
             myAsyncTask = new MyAsyncTask();
             myAsyncTask.execute();
         } else {
@@ -383,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
                     tt.setText(o.getTitle());
 //                    tt.setText("Article Title");
                 }
-                if (bt != null) {
+                if (bt != null && priceEnabled) {
 //                    bt.setText("Age: " + o.getTitle());
                     bt.setText(o.getPrice());
                 }
@@ -440,10 +449,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ShowItem.class);
 
                 intent.putExtra("title", item.getTitle());
-                intent.putExtra("description", item.getDescription());
-                intent.putExtra("pubDate", item.getPubDate());
-                intent.putExtra("link", item.getLink());
-                intent.putExtra("price", item.getPrice());
+                intent.putExtra("description", descriptionEnabled ? item.getDescription() : "");
+                intent.putExtra("pubDate", pubDateEnabled ? item.getPubDate() : "");
+                intent.putExtra("link", linkEnabled ? item.getLink() : "");
+                intent.putExtra("price", priceEnabled ? item.getPrice() : "");
 
                 startActivityForResult(intent, STANDARD_REQUEST_CODE);
 //                Toast.makeText(MainActivity.this, "Index: " + i, Toast.LENGTH_SHORT).show();

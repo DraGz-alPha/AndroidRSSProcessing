@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch swtSimpleView;
 
     boolean defaultLoad = true;
-    boolean simpleViewModified = false;
+    boolean modifyRequireRefresh = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,11 +183,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (successful) {
             Toast.makeText(this, "Simple view has been " + state, Toast.LENGTH_SHORT).show();
+            modifyRequireRefresh = true;
         } else {
             Toast.makeText(this, "Sorry, there was a problem updating the default feed...", Toast.LENGTH_LONG).show();
         }
-
-        simpleViewModified = true;
     }
 
     private void SaveDisplayField(String name, String displayText, boolean isEnabled) {
@@ -199,6 +198,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (successful) {
             Toast.makeText(this, displayText + " attribute has been " + state, Toast.LENGTH_SHORT).show();
+            modifyRequireRefresh = true;
         } else {
             Toast.makeText(this, "Sorry, there was a problem updating the " + name + "...", Toast.LENGTH_LONG).show();
         }
@@ -246,7 +246,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         Intent data = new Intent();
 
-        data.putExtra("simple_view_modified", simpleViewModified);
+        data.putExtra("modify_require_refresh", modifyRequireRefresh);
 
         setResult(RESULT_OK, data);
         super.onBackPressed();
