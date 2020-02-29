@@ -27,6 +27,8 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton radPets;
     RadioButton radVacations;
 
+    boolean defaultLoad = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
         radPets = findViewById(R.id.radPets);
         radVacations = findViewById(R.id.radVacations);
 
-        loadDefaultFeed();
+        LoadDefaultFeed();
+        defaultLoad = false;
     }
 
     //to inflate the xml menu file
@@ -80,19 +83,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
-            switch (checkedId) {
-                case R.id.radCarsTrucks:
-                    SaveDefaultFeed("Cars + Trucks", "car_logo");
-                    Log.d("DGM", "Cars + Trucks");
-                    break;
-                case R.id.radPets:
-                    SaveDefaultFeed("Pets", "pet_logo");
-                    Log.d("DGM", "Pets");
-                    break;
-                case R.id.radVacations:
-                    SaveDefaultFeed("Vacations", "vacation_logo");
-                    Log.d("DGM", "Vacations");
-                    break;
+            if (!defaultLoad) {
+                switch (checkedId) {
+                    case R.id.radCarsTrucks:
+                        SaveDefaultFeed("Cars + Trucks", "car_logo");
+                        Log.d("DGM", "Cars + Trucks");
+                        break;
+                    case R.id.radPets:
+                        SaveDefaultFeed("Pets", "pet_logo");
+                        Log.d("DGM", "Pets");
+                        break;
+                    case R.id.radVacations:
+                        SaveDefaultFeed("Vacations", "vacation_logo");
+                        Log.d("DGM", "Vacations");
+                        break;
+                }
             }
         }
     }
@@ -111,28 +116,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void saveData() {
-
-//        if (etName.toString().trim().length() > 0 && etAge.getText().toString().trim().length() > 0) {
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//
-//            String name = etName.getText().toString();
-//            int age = Integer.parseInt(etAge.getText().toString());
-//            editor.putString("name", name);
-//            editor.putInt("age", age);
-//
-//            boolean successful = editor.commit();
-//            if (successful) {
-//                Toast.makeText(this, "Data save successful", Toast.LENGTH_LONG).show();
-//            } else {
-//                Toast.makeText(this, "Sorry, there was a problem saving your data...", Toast.LENGTH_LONG).show();
-//            }
-//        } else {
-//            Toast.makeText(this, "Please enter required fields before attempting to save!", Toast.LENGTH_LONG).show();
-//        }
-    }
-
-    private void loadDefaultFeed() {
+    private void LoadDefaultFeed() {
 
         String feed = sharedPreferences.getString("default_feed", "Cars + Trucks");
 
