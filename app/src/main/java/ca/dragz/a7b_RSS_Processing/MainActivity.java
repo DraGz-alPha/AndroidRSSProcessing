@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 Log.d("DGM", "refresh menu item");
+                tvCategory.setText("Refreshing...");
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
                 returnVal = true;
