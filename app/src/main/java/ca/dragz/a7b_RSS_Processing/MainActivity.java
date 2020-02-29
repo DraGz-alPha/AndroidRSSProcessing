@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String feed_name;
     private String feed_url;
-    private String categoryImageName = "car_logo";
+    private String categoryImageName;
 
     private ListView lvTitles;
     private TextView tvCategory;
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("RSS Processing", MODE_PRIVATE);
 
+        categoryImageName = sharedPreferences.getString("default_feed_image", "car_logo");
         feed_name = sharedPreferences.getString("default_feed", "Cars + Trucks");
         feed_url = getFeedURL();
 

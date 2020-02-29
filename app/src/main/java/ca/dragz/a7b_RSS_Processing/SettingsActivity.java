@@ -82,25 +82,26 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             switch (checkedId) {
                 case R.id.radCarsTrucks:
-                    SaveDefaultFeed("Cars + Trucks");
+                    SaveDefaultFeed("Cars + Trucks", "car_logo");
                     Log.d("DGM", "Cars + Trucks");
                     break;
                 case R.id.radPets:
-                    SaveDefaultFeed("Pets");
+                    SaveDefaultFeed("Pets", "pet_logo");
                     Log.d("DGM", "Pets");
                     break;
                 case R.id.radVacations:
-                    SaveDefaultFeed("Vacations");
+                    SaveDefaultFeed("Vacations", "vacation_logo");
                     Log.d("DGM", "Vacations");
                     break;
             }
         }
     }
 
-    private void SaveDefaultFeed(String feed) {
+    private void SaveDefaultFeed(String feed, String image) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("default_feed", feed);
+        editor.putString("default_feed_image", image);
 
         boolean successful = editor.commit();
         if (successful) {
