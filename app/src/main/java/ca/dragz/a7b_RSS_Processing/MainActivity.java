@@ -7,8 +7,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String feed_name;
     private String feed_url;
+    private String categoryImageName = "car_logo";
 
     private ListView lvTitles;
     private TextView tvCategory;
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("DGM", "settings menu item");
                 tvCategory.setText("Loading...");
                 feed_name = "Cars + Trucks";
+                categoryImageName = "car_logo";
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
                 returnVal = true;
@@ -126,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("DGM", "settings menu item");
                 tvCategory.setText("Loading...");
                 feed_name = "Pets";
+                categoryImageName = "pet_logo";
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
                 returnVal = true;
@@ -134,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("DGM", "settings menu item");
                 tvCategory.setText("Loading...");
                 feed_name = "Vacations";
+                categoryImageName = "vacation_logo";
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
                 returnVal = true;
@@ -333,6 +340,10 @@ public class MainActivity extends AppCompatActivity {
             if (o != null) {
                 TextView tt = v.findViewById(R.id.toptext);
                 TextView bt = v.findViewById(R.id.bottomtext);
+
+                ImageView img = v.findViewById(R.id.imgListItem);
+                img.setImageDrawable(getCategoryImage());
+
                 if (tt != null) {
                     tt.setText(o.getTitle());
 //                    tt.setText("Article Title");
@@ -359,6 +370,20 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return val;
+    }
+
+    private Drawable getCategoryImage() {
+
+        Drawable image = getDrawable(R.drawable.car_logo);
+        switch (categoryImageName) {
+            case "pet_logo":
+                image = getDrawable(R.drawable.pet_logo);
+                break;
+            case "vacation_logo":
+                image = getDrawable(R.drawable.vacation_logo);
+                break;
+        }
+        return image;
     }
 
     private void updateListView() {
