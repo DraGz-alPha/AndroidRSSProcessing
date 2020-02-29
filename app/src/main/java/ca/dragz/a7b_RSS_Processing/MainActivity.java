@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
         myAsyncTask = new MyAsyncTask();
         myAsyncTask.execute();
-        updateListView();
     }
 
     @Override
@@ -116,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.feed_cars_trucks:
                 Log.d("DGM", "settings menu item");
+                tvCategory.setText("Loading...");
                 feed_name = "Cars + Trucks";
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.feed_pets:
                 Log.d("DGM", "settings menu item");
+                tvCategory.setText("Loading...");
                 feed_name = "Pets";
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.feed_vacations:
                 Log.d("DGM", "settings menu item");
+                tvCategory.setText("Loading...");
                 feed_name = "Vacations";
                 myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
@@ -205,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
             newsItemAdapter = new NewsItemAdapter(MainActivity.this, R.layout.list_item, newsItemList);
             lvTitles.setAdapter(newsItemAdapter);
+            updateListView();
         }
     }
 
