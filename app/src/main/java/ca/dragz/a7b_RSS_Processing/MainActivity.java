@@ -13,7 +13,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private Boolean isSimpleView;
 
     private ListView lvTitles;
+
     private TextView tvCategory;
 
     private SharedPreferences sharedPreferences;
@@ -80,13 +80,14 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("RSS Processing", MODE_PRIVATE);
 
+        lvTitles = findViewById(R.id.lvTitles);
+
+        tvCategory = findViewById(R.id.tvCategory);
+
         categoryImageName = sharedPreferences.getString("default_feed_image", "car_logo");
         feed_name = sharedPreferences.getString("default_feed", "Cars + Trucks");
         feed_url = getFeedURL();
         isSimpleView = getSimpleView();
-
-        lvTitles = findViewById(R.id.lvTitles);
-        tvCategory = findViewById(R.id.tvCategory);
 
         StartParsing();
     }

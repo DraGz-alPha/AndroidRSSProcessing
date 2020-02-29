@@ -57,9 +57,61 @@
         android:id="@+id/swtSimpleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="28dp"
         android:text="Simple View"
-        app:layout_constraintTop_toBottomOf="@+id/radgrpDefaultFeed"
-        tools:layout_editor_absoluteX="66dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radgrpDefaultFeed" />
+
+    <CheckBox
+        android:id="@+id/chkDescription"
+        android:layout_width="118dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="16dp"
+        android:text="Description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFieldsToDisplay" />
+
+    <CheckBox
+        android:id="@+id/chkLink"
+        android:layout_width="117dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="12dp"
+        android:text="Link"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chkDescription" />
+
+    <CheckBox
+        android:id="@+id/chkPrice"
+        android:layout_width="100dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="72dp"
+        android:text="Price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFieldsToDisplay" />
+
+    <CheckBox
+        android:id="@+id/chkPubDate"
+        android:layout_width="100dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="72dp"
+        android:text="Pub Date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chkPrice" />
+
+    <TextView
+        android:id="@+id/tvFieldsToDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Fields to display:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swtSimpleView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
