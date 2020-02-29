@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(qName.equals("item")) {
                 inItem = true;
-                newsItem = new NewsItem("TEST", "", "", "", "", "");
+                newsItem = new NewsItem("", "", "", "", "", "Please contact");
             }
             else if(qName.equals("title")) {
                 inTitle = true;
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(qName.equals("g-core:price") && inItem) {
 //                inItem = false;
-                newsItem.setPrice("$" + stringBuilder.toString());
+                newsItem.setPrice("$" + stringBuilder.toString() + "0");
             }
         }
 
