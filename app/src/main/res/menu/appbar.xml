@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="refresh"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/feed_cars_trucks"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Cars and Trucks"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/feed_pets"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Pets"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/feed_vacations"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Vacations"
+        app:showAsAction="never" />
+
+</menu>
