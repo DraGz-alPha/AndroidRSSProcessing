@@ -1,6 +1,7 @@
 package ca.dragz.a7b_RSS_Processing;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private String feed_name;
     private String feed_url;
     private String categoryImageName;
+    private Boolean isSimpleView;
 
     private ListView lvTitles;
     private TextView tvCategory;
@@ -81,11 +83,32 @@ public class MainActivity extends AppCompatActivity {
         categoryImageName = sharedPreferences.getString("default_feed_image", "car_logo");
         feed_name = sharedPreferences.getString("default_feed", "Cars + Trucks");
         feed_url = getFeedURL();
+        isSimpleView = getSimpleView();
 
         lvTitles = findViewById(R.id.lvTitles);
         tvCategory = findViewById(R.id.tvCategory);
 
         StartParsing();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            boolean simpleViewModified = data.getBooleanExtra("simple_view_modified", false);
+            if (simpleViewModified) {
+                finish();
+                startActivity(getIntent());
+            }
+        } else {
+            Log.d("DM", "Data is not okay!");
+        }
+
     }
 
     //to inflate the xml menu file
@@ -353,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView bt = v.findViewById(R.id.bottomtext);
 
                 ImageView img = v.findViewById(R.id.imgListItem);
-                img.setImageDrawable(getCategoryImage());
+                img.setImageDrawable(getCategoryImage(isSimpleView));
 
                 if (tt != null) {
                     tt.setText(o.getTitle());
@@ -383,16 +406,24 @@ public class MainActivity extends AppCompatActivity {
         return val;
     }
 
-    private Drawable getCategoryImage() {
+    private Boolean getSimpleView() {
+        return sharedPreferences.getBoolean("simple_view", false);
+    }
+
+    private Drawable getCategoryImage(boolean isSimpleView) {
 
         Drawable image = getDrawable(R.drawable.car_logo);
-        switch (categoryImageName) {
-            case "pet_logo":
-                image = getDrawable(R.drawable.pet_logo);
-                break;
-            case "vacation_logo":
-                image = getDrawable(R.drawable.vacation_logo);
-                break;
+        if (!isSimpleView) {
+            switch (categoryImageName) {
+                case "pet_logo":
+                    image = getDrawable(R.drawable.pet_logo);
+                    break;
+                case "vacation_logo":
+                    image = getDrawable(R.drawable.vacation_logo);
+                    break;
+            }
+        } else {
+            image = getDrawable(R.drawable.transparent_logo);
         }
         return image;
     }

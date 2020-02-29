@@ -12,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -26,8 +28,10 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton radCarsTrucks;
     RadioButton radPets;
     RadioButton radVacations;
+    Switch swtSimpleView;
 
     boolean defaultLoad = true;
+    boolean simpleViewModified = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,11 @@ public class SettingsActivity extends AppCompatActivity {
         radPets = findViewById(R.id.radPets);
         radVacations = findViewById(R.id.radVacations);
 
+        swtSimpleView = findViewById(R.id.swtSimpleView);
+        swtSimpleView.setOnCheckedChangeListener(eventHandler);
+
         LoadDefaultFeed();
+        LoadSimpleView();
         defaultLoad = false;
     }
 
@@ -79,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
         return returnVal;
     }
 
-    private class EventHandler implements RadioGroup.OnCheckedChangeListener {
+    private class EventHandler implements RadioGroup.OnCheckedChangeListener, Switch.OnCheckedChangeListener {
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -100,6 +108,36 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (!defaultLoad) {
+                Log.d("DGM", "" + isChecked);
+                SaveSimpleView(isChecked);
+            }
+        }
+    }
+
+    private void SaveSimpleView(boolean isSimpleView) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putBoolean("simple_view", isSimpleView);
+
+        String state = isSimpleView == true ? "enabled" : "disabled";
+        boolean successful = editor.commit();
+
+        if (successful) {
+            Toast.makeText(this, "Simple view has been " + state, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Sorry, there was a problem updating the default feed...", Toast.LENGTH_LONG).show();
+        }
+
+        simpleViewModified = true;
+    }
+
+    private void LoadSimpleView() {
+        boolean isSimpleView = sharedPreferences.getBoolean("simple_view", false);
+        swtSimpleView.setChecked(isSimpleView);
     }
 
     private void SaveDefaultFeed(String feed, String image) {
@@ -133,5 +171,16 @@ public class SettingsActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent data = new Intent();
+
+        data.putExtra("simple_view_modified", simpleViewModified);
+
+        setResult(RESULT_OK, data);
+        super.onBackPressed();
     }
 }
