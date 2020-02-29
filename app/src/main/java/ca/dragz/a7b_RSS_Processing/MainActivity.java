@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Layout;
@@ -23,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -82,13 +85,7 @@ public class MainActivity extends AppCompatActivity {
         lvTitles = findViewById(R.id.lvTitles);
         tvCategory = findViewById(R.id.tvCategory);
 
-        myAsyncTask = new MyAsyncTask();
-        myAsyncTask.execute();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        StartParsing();
     }
 
     //to inflate the xml menu file
@@ -109,8 +106,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_refresh:
                 Log.d("DGM", "refresh menu item");
                 tvCategory.setText("Refreshing...");
-                myAsyncTask = new MyAsyncTask();
-                myAsyncTask.execute();
+                StartParsing();
                 returnVal = true;
                 break;
             case R.id.action_settings:
@@ -124,8 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 tvCategory.setText("Loading...");
                 feed_name = "Cars + Trucks";
                 categoryImageName = "car_logo";
-                myAsyncTask = new MyAsyncTask();
-                myAsyncTask.execute();
+                StartParsing();
                 returnVal = true;
                 break;
             case R.id.feed_pets:
@@ -133,8 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 tvCategory.setText("Loading...");
                 feed_name = "Pets";
                 categoryImageName = "pet_logo";
-                myAsyncTask = new MyAsyncTask();
-                myAsyncTask.execute();
+                StartParsing();
                 returnVal = true;
                 break;
             case R.id.feed_vacations:
@@ -142,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 tvCategory.setText("Loading...");
                 feed_name = "Vacations";
                 categoryImageName = "vacation_logo";
-                myAsyncTask = new MyAsyncTask();
-                myAsyncTask.execute();
+                StartParsing();
                 returnVal = true;
                 break;
         }
@@ -218,6 +211,23 @@ public class MainActivity extends AppCompatActivity {
             lvTitles.setAdapter(newsItemAdapter);
             updateListView();
         }
+    }
+
+    private void StartParsing() {
+        boolean networkAvailable = isNetworkAvailable();
+
+        if (networkAvailable) {
+            myAsyncTask = new MyAsyncTask();
+            myAsyncTask.execute();
+        } else {
+            Toast.makeText(this, "Network required to continue...", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     //a sax handler that is designed to parse a CBC news feed
