@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -85,13 +86,14 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("RSS Processing", MODE_PRIVATE);
 
         lvTitles = findViewById(R.id.lvTitles);
+
         tvCategory = findViewById(R.id.tvCategory);
+        tvCategory.setTextColor(getTextColor());
 
         categoryImageName = sharedPreferences.getString("default_feed_image", "car_logo");
         feed_name = sharedPreferences.getString("default_feed", "Cars + Trucks");
         feed_url = getFeedURL();
         isSimpleView = getSimpleView();
-
         StartParsing();
     }
 
@@ -104,11 +106,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            boolean simpleViewModified = data.getBooleanExtra("modify_require_refresh", false);
-            if (simpleViewModified) {
-                finish();
-                startActivity(getIntent());
-            }
+            finish();
+            startActivity(getIntent());
         } else {
             Log.d("DM", "Data is not okay!");
         }
@@ -389,6 +388,7 @@ public class MainActivity extends AppCompatActivity {
                 img.setImageDrawable(getCategoryImage(isSimpleView));
 
                 if (tt != null) {
+                    tt.setTextColor(getTextColor());
                     tt.setText(o.getTitle());
 //                    tt.setText("Article Title");
                 }
@@ -438,6 +438,14 @@ public class MainActivity extends AppCompatActivity {
         return image;
     }
 
+    private int getTextColor() {
+        int red = sharedPreferences.getInt("color_red", 0);
+        int green = sharedPreferences.getInt("color_green", 0);
+        int blue = sharedPreferences.getInt("color_blue", 0);
+
+        return Color.rgb(red, green, blue);
+    }
+
     private void updateListView() {
         //have listview respond to selected items
         lvTitles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -458,7 +466,6 @@ public class MainActivity extends AppCompatActivity {
 //                Toast.makeText(MainActivity.this, "Index: " + i, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private class NewsItem {

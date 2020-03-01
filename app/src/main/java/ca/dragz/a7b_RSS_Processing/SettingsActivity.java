@@ -6,16 +6,21 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -24,6 +29,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+
+    private TextView tvSettingsTitle;
+    private TextView tvDefaultFeed;
+    private TextView tvFieldsToDisplay;
+    private TextView tvTextColor;
+    private TextView tvRed;
+    private TextView tvGreen;
+    private TextView tvBlue;
 
     private RadioGroup radgrpDefaultFeed;
     private RadioButton radCarsTrucks;
@@ -37,8 +50,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Switch swtSimpleView;
 
+    private EditText etRed;
+    private EditText etGreen;
+    private EditText etBlue;
+
+    private Button btnUpdateColor;
+
+    private int color;
+
     boolean defaultLoad = true;
-    boolean modifyRequireRefresh = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +72,29 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("RSS Processing", MODE_PRIVATE);
 
         EventHandler eventHandler = new EventHandler();
+
+        color = getTextColor();
+
+        tvSettingsTitle = findViewById(R.id.tvSettingsTitle);
+        tvSettingsTitle.setTextColor(color);
+
+        tvDefaultFeed = findViewById(R.id.tvDefaultFeed);
+        tvDefaultFeed.setTextColor(color);
+
+        tvFieldsToDisplay = findViewById(R.id.tvFieldsToDisplay);
+        tvFieldsToDisplay.setTextColor(color);
+
+        tvTextColor = findViewById(R.id.tvTextColor);
+        tvTextColor.setTextColor(color);
+
+        tvRed = findViewById(R.id.tvRed);
+        tvRed.setTextColor(color);
+
+        tvGreen = findViewById(R.id.tvGreen);
+        tvGreen.setTextColor(color);
+
+        tvBlue = findViewById(R.id.tvBlue);
+        tvBlue.setTextColor(color);
 
         radgrpDefaultFeed = findViewById(R.id.radgrpDefaultFeed);
         radgrpDefaultFeed.setOnCheckedChangeListener(eventHandler);
@@ -72,9 +115,17 @@ public class SettingsActivity extends AppCompatActivity {
         swtSimpleView = findViewById(R.id.swtSimpleView);
         swtSimpleView.setOnCheckedChangeListener(eventHandler);
 
+        etRed = findViewById(R.id.etRed);
+        etGreen = findViewById(R.id.etGreen);
+        etBlue = findViewById(R.id.etBlue);
+
+        btnUpdateColor = findViewById(R.id.btnUpdateColor);
+        btnUpdateColor.setOnClickListener(eventHandler);
+
         LoadDefaultFeed();
         LoadSimpleView();
         LoadDisplayAttributes();
+        LoadTextColor();
 
         defaultLoad = false;
     }
@@ -94,7 +145,6 @@ public class SettingsActivity extends AppCompatActivity {
         boolean returnVal = false;
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                Log.d("DGM", "refresh menu item");
                 returnVal = true;
                 break;
             case R.id.action_settings:
@@ -105,7 +155,7 @@ public class SettingsActivity extends AppCompatActivity {
         return returnVal;
     }
 
-    private class EventHandler implements RadioGroup.OnCheckedChangeListener, Switch.OnCheckedChangeListener {
+    private class EventHandler implements RadioGroup.OnCheckedChangeListener, Switch.OnCheckedChangeListener, Button.OnClickListener {
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -159,6 +209,15 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btnUpdateColor:
+                    SaveTextColor();
+                    break;
+            }
+        }
     }
 
     private void SaveDefaultFeed(String feed, String image) {
@@ -183,7 +242,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (successful) {
             Toast.makeText(this, "Simple view has been " + state, Toast.LENGTH_SHORT).show();
-            modifyRequireRefresh = true;
         } else {
             Toast.makeText(this, "Sorry, there was a problem updating the default feed...", Toast.LENGTH_LONG).show();
         }
@@ -198,9 +256,40 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (successful) {
             Toast.makeText(this, displayText + " attribute has been " + state, Toast.LENGTH_SHORT).show();
-            modifyRequireRefresh = true;
         } else {
             Toast.makeText(this, "Sorry, there was a problem updating the " + name + "...", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void SaveTextColor() {
+        editor = sharedPreferences.edit();
+
+        boolean redValid = etRed.getText().toString().trim().length() > 0;
+        boolean greenValid = etGreen.getText().toString().trim().length() > 0;
+        boolean blueValid = etBlue.getText().toString().trim().length() > 0;
+
+        if (redValid && greenValid && blueValid) {
+            int red = Integer.parseInt(etRed.getText().toString());
+            int green = Integer.parseInt(etGreen.getText().toString());
+            int blue = Integer.parseInt(etBlue.getText().toString());
+
+            if (red < 256 && green < 256 && blue < 256) {
+                editor.putInt("color_red", red);
+                editor.putInt("color_green", green);
+                editor.putInt("color_blue", blue);
+
+                boolean successful = editor.commit();
+
+                if (successful) {
+                    Toast.makeText(this, "Values R:" + red + " G: " + green + " B: " + blue + " have been updated... Color will updated on next refresh!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Sorry, there was a problem updating the text color...", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "Values cannot exceed 255!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "Values cannot be empty!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -241,13 +330,27 @@ public class SettingsActivity extends AppCompatActivity {
         chkPubDate.setChecked(pubDateEnabled);
     }
 
+    private void LoadTextColor() {
+        int red = sharedPreferences.getInt("color_red", 0);
+        int green = sharedPreferences.getInt("color_green", 0);
+        int blue = sharedPreferences.getInt("color_blue", 0);
+
+        etRed.setText(Integer.toString(red));
+        etGreen.setText(Integer.toString(green));
+        etBlue.setText(Integer.toString(blue));
+    }
+
+    private int getTextColor() {
+        int red = sharedPreferences.getInt("color_red", 0);
+        int green = sharedPreferences.getInt("color_green", 0);
+        int blue = sharedPreferences.getInt("color_blue", 0);
+
+        return Color.rgb(red, green, blue);
+    }
+
     @Override
     public void onBackPressed() {
-
         Intent data = new Intent();
-
-        data.putExtra("modify_require_refresh", modifyRequireRefresh);
-
         setResult(RESULT_OK, data);
         super.onBackPressed();
     }
